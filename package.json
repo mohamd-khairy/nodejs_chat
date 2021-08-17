@@ -17,7 +17,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node app",
+    "start": "pm2 start app.js",
     "dev": "npx kill-port 5000 && nodemon app"
   },
   "repository": {
