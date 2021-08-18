@@ -22,13 +22,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MohamedAbdel-wahed/pinaapp.git"
+    "url": "git+https://github.com/mohamd-khairy/nodejs_chat.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MohamedAbdel-wahed/pinaapp/issues"
+    "url": "https://github.com/mohamd-khairy/nodejs_chat/issues"
   },
-  "homepage": "https://github.com/MohamedAbdel-wahed/pinaapp#readme"
+  "homepage": "https://github.com/mohamd-khairy/nodejs_chat#readme"
 }
