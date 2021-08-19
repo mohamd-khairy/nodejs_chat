@@ -33,6 +33,7 @@ const main = async () => {
 
   io.on("connection", (socket) => {
     console.log(`new user connected!`);
+    
     socket.on("join", ({ userId, room }) => {
       console.log("start db");
       const db_user = users.find(
@@ -61,6 +62,37 @@ const main = async () => {
       });
 
       socket.join(user?.room);
+    });
+
+    socket.on("join:private", ({ userId, room }) => {
+      console.log("private start db");
+      const db_user = users.find(
+        (user) => user.id === userId 
+      );
+      if (!db_user) {
+        io.emit("unjoin", { status: 401 });
+        return;
+      }
+
+      console.log(`new user just joined!`);
+
+      const { user, error } = addUser({
+        id: socket.id,
+        username: db_user.username,
+        room: room,
+      });
+
+      socket.emit("chat:message", {
+        username: "admin",
+        text: `Hi ${user.username}, Welcome to the chat!`,
+      });
+
+      socket.broadcast.to(user.room).emit("message", {
+        username: "admin",
+        text: `${user.username} has joined the chat!`,
+      });
+
+      socket.join(user.room);
     });
 
     socket.on(
