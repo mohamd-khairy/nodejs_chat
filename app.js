@@ -7,9 +7,11 @@ const axios = require("axios");
 const io = require("socket.io")(server, {
   cors: "*",
 });
-
+const path = require('path');
 const { addUser, getUser } = require("./users");
 
+
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,16 +29,18 @@ const main = async () => {
   // const endpoint = "http://127.0.0.1:8000"
 
   const response = await axios(`${endpoint}/api/chat/users`)
-  const users = await response?.data?.data
+  const users = await response.data.data
+  const privateUsers = users
 
-  users.filter(user => user?.city_id)
+  users.filter(user => user.city_id)
+
 
   io.on("connection", (socket) => {
     console.log(`new user connected!`);
     socket.on("join", ({ userId, room }) => {
       console.log("start db");
       const db_user = users.find(
-        (user) => user?.id === userId && user?.city_id === parseInt(room)
+        (user) => user.id === userId && user.city_id === parseInt(room)
       );
       if (!db_user) {
         io.emit("unjoin", { status: 401 });
@@ -47,29 +51,28 @@ const main = async () => {
 
       const { user, error } = addUser({
         id: socket.id,
-        username: db_user?.username,
-        room: db_user?.city_id,
+        username: db_user.username,
+        room: db_user.city_id,
       });
+
       socket.emit("chat:message", {
         username: "admin",
-        text: `Hi ${user?.username}, Welcome to the chat!`,
+        text: `Hi ${user.username}, Welcome to the chat!`,
       });
 
-      socket.broadcast.to(user?.room).emit("message", {
+      socket.broadcast.to(user.room).emit("message", {
         username: "admin",
-        text: `${user?.username} has joined the chat!`,
+        text: `${user.username} has joined the chat!`,
       });
 
-      socket.join(user?.room);
+      socket.join(user.room);
     });
 
-    socket.on(
-      "chat:send",
+    socket.on("chat:send",
       async ({ userId, username, type, text, url, lat, long }) => {
         console.log("sending new message...");
         const user = getUser(socket.id);
         if (!user) return { message: "not authroized to enter this room" };
-
         axios
           .post(`${endpoint}/api/chat/add-message`, {
             user_id: userId,
@@ -79,10 +82,10 @@ const main = async () => {
             url,
             lat,
             long,
-            city_id: user?.room,
+            city_id: user.room,
           })
           .then((res) => {
-            const data = res?.data?.data || null;
+            const data = res.data.data || null;
             console.log(data);
             io.to(data.city_id).emit("chat:message", data);
           })
@@ -97,10 +100,43 @@ const main = async () => {
         .post(`${endpoint}/api/current-location`, { user_id, lat, long })
         .then((res) => {
           console.log("new location has been set!");
-          console.log(res?.data || res);
-          io.emit("upadatedLocation", res?.data?.data);
+          console.log(res.data || res);
+          io.emit("upadatedLocation", res.data.data);
         });
     });
+
+
+    /************************************ */
+    socket.on("join:private", ({ userId , room }) => {
+      console.log("private start db");
+      //check user in db
+      const db_user = privateUsers.find((user) => user.id == userId );
+      if (!db_user) {
+        io.emit("unjoin", { status: 401 });
+        return;
+      }
+
+      console.log(`new user just joined!`);
+
+      const { user, error } = addUser({
+        id: socket.id,
+        username: db_user.username,
+        room: room,
+      });
+      
+      socket.emit("chat:message", {
+        username: "admin",
+        text: `Hi ${user.username}, Welcome to the chat!`,
+      });
+
+      socket.broadcast.to(user.room).emit("message", {
+        username: "admin",
+        text: `${user.username} has joined the chat!`,
+      });
+
+      socket.join(user.room);
+    });
+
   });
 };
 
