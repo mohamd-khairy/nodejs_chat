@@ -23,9 +23,10 @@ app.get("/home", (req, res) => {
 });
 
 const main = async () => {
-  const endpoint = "http://sahl-app.com";
+  // const endpoint = "http://sahl-app.com";
+  const endpoint = "https://rakhis.codlop.com"
   // const endpoint = "http://127.0.0.1:8000"
-
+  
   const response = await axios(`${endpoint}/api/chat/users`)
   const users = await response?.data?.data
 
@@ -95,8 +96,7 @@ const main = async () => {
       socket.join(user.room);
     });
 
-    socket.on(
-      "chat:send",
+    socket.on("chat:send",
       async ({ userId, username, type, text, url, lat, long }) => {
         console.log("sending new message...");
         const user = getUser(socket.id);
