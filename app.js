@@ -35,15 +35,6 @@ const main = async () => {
 
   users.filter(user => user.city_id)
 
-  io = io.connect(`http://sahl-app.com:5000`, {
-    reconnect:true,
-    autoConnect:true,
-    reconnectionDelay: 1000,
-    reconnectionDelayMax : 5000,
-    reconnectionAttempts: Infinity      
- });
-
-
   io.on("connection", (socket) => {
     console.log(`new user connected!`);
     socket.on("join", ({ userId, room }) => {
