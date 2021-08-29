@@ -32,7 +32,7 @@ const main = async () => {
 
   users.filter(user => user?.city_id)
 
-  this.socket = io.connect(`${endpoint}/api/chat/users`, {
+  io = io.connect(`${endpoint}/api/chat/users`, {
     reconnect:true,
     autoConnect:true,
     reconnectionDelay: 1000,
