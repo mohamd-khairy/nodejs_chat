@@ -32,14 +32,6 @@ const main = async () => {
 
   users.filter(user => user?.city_id)
 
-  io = io.connect(`${endpoint}/api/chat/users`, {
-    reconnect:true,
-    autoConnect:true,
-    reconnectionDelay: 1000,
-    reconnectionDelayMax : 5000,
-    reconnectionAttempts: Infinity      
- });
-
   io.on("connection", (socket) => {
     console.log(`new user connected!`);
     
