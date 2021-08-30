@@ -27,17 +27,13 @@ const main = async () => {
   // const endpoint = "https://rakhis.codlop.com"
   // const endpoint = "http://127.0.0.1:8000"
 
+  const response = await axios(`${endpoint}/api/chat/users`)
+  const users = await response.data.data
+  const privateUsers = users
+  users.filter(user => user?.city_id)
+
   io.on("connection", (socket) => {
-
-    const response =  axios(`${endpoint}/api/chat/users`)
-    const users =  response?.data?.data
-    const privateUsers = users
-    if(users){
-      users.filter(user => user?.city_id)
-    }
-
     console.log(`new user connected!`);
-    console.log(privateUsers);
 
     socket.on("join", ({ userId, room }) => {
       console.log("start db");
