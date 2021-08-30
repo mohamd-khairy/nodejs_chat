@@ -26,15 +26,17 @@ const main = async () => {
   const endpoint = "http://sahl-app.com";
   // const endpoint = "https://rakhis.codlop.com"
   // const endpoint = "http://127.0.0.1:8000"
-  
-  const response = await axios(`${endpoint}/api/chat/users`)
-  const users = await response?.data?.data
-
-  users.filter(user => user?.city_id)
 
   io.on("connection", (socket) => {
+
+    const response = await axios(`${endpoint}/api/chat/users`)
+    const users = await response.data.data
+    const privateUsers = users
+    users.filter(user => user?.city_id)
+
     console.log(`new user connected!`);
-    
+    console.log(privateUsers);
+
     socket.on("join", ({ userId, room }) => {
       console.log("start db");
       const db_user = users.find(
@@ -67,8 +69,8 @@ const main = async () => {
 
     socket.on("join:private", ({ userId, room }) => {
       console.log("private start db");
-      const db_user = users.find(
-        (user) => user.id === userId 
+      const db_user = privateUsers.find(
+        (user) => user.id === userId
       );
       if (!db_user) {
         io.emit("unjoin", { status: 401 });
