@@ -32,7 +32,9 @@ const main = async () => {
     const response =  axios(`${endpoint}/api/chat/users`)
     const users =  response?.data?.data
     const privateUsers = users
-    users.filter(user => user?.city_id)
+    if(users){
+      users.filter(user => user?.city_id)
+    }
 
     console.log(`new user connected!`);
     console.log(privateUsers);
