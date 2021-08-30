@@ -29,8 +29,8 @@ const main = async () => {
 
   io.on("connection", (socket) => {
 
-    const response = await axios(`${endpoint}/api/chat/users`)
-    const users = await response.data.data
+    const response =  axios(`${endpoint}/api/chat/users`)
+    const users =  response.data.data
     const privateUsers = users
     users.filter(user => user?.city_id)
 
