@@ -30,7 +30,7 @@ const main = async () => {
   io.on("connection", (socket) => {
 
     const response =  axios(`${endpoint}/api/chat/users`)
-    const users =  response.data.data
+    const users =  response?.data?.data
     const privateUsers = users
     users.filter(user => user?.city_id)
 
