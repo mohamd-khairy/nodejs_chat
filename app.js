@@ -54,6 +54,9 @@ const main = async () => {
         username: db_user?.username,
         room: db_user?.city_id,
       });
+
+      console.log('hhhh' , user);
+
       socket.emit("chat:message", {
         username: "admin",
         text: `Hi ${user?.username}, Welcome to the chat!`,
