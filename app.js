@@ -40,6 +40,8 @@ const main = async () => {
       const db_user = users.find(
         (user) => user?.id === userId && user?.city_id === parseInt(room)
       );
+      console.log(db_user);
+
       if (!db_user) {
         io.emit("unjoin", { status: 401 });
         return;
