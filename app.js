@@ -106,6 +106,7 @@ const main = async () => {
         console.log({ userId, username, type, text, url, lat, long });
 
         console.log("sending new message...");
+        console.log(socket);
 
         const user = getUser(socket.id);
         console.log(user);
