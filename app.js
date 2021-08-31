@@ -115,6 +115,7 @@ const main = async () => {
           })
           .then((res) => {
             console.log("here");
+            console.log(res?.data);
 
             const data = res?.data?.data || null;
             console.log(data);
