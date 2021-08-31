@@ -35,27 +35,40 @@ const main = async () => {
   io.on("connection", (socket) => {
     console.log(`new user connected!`);
 
-    socket.on("join", ({ userId, room }) => {
+    socket.on("join", ({ userId, room, username }) => {
       console.log("start db");
-      const db_user = users.find(
-        (user) => user?.id === userId && user?.city_id === parseInt(room)
-      );
-      console.log(db_user);
+      console.log({ userId, room, username });
 
-      if (!db_user) {
-        io.emit("unjoin", { status: 401 });
-        return;
-      }
+      // const db_user = users.find(
+      //   (user) => user?.id === userId && user?.city_id === parseInt(room)
+      // );
+      // console.log(db_user);
 
-      console.log(`new user just joined!`);
+      // if (!db_user) {
+      //   io.emit("unjoin", { status: 401 });
+      //   return;
+      // }
+
+      // console.log(`new user just joined!`);
+
+      // const { user, error } = addUser({
+      //   id: socket.id,
+      //   username: db_user?.username,
+      //   room: db_user?.city_id,
+      // });
 
       const { user, error } = addUser({
         id: socket.id,
-        username: db_user?.username,
-        room: db_user?.city_id,
+        username: username,
+        room: room,
       });
 
-      console.log('hhhh' , user);
+      console.log('hhhh', user);
+
+      if (user) {
+        io.emit("unjoin", { status: 401 });
+        return;
+      }
 
       socket.emit("chat:message", {
         username: "admin",
@@ -70,23 +83,36 @@ const main = async () => {
       socket.join(user?.room);
     });
 
-    socket.on("join:private", ({ userId, room }) => {
+    socket.on("join:private", ({ userId, room, username }) => {
       console.log("private start db");
-      const db_user = privateUsers.find(
-        (user) => user.id === userId
-      );
-      if (!db_user) {
-        io.emit("unjoin", { status: 401 });
-        return;
-      }
+      console.log({ userId, room, username });
 
-      console.log(`new user just joined!`);
+      // const db_user = privateUsers.find(
+      //   (user) => user.id === userId
+      // );
+      // if (!db_user) {
+      //   io.emit("unjoin", { status: 401 });
+      //   return;
+      // }
+
+      // console.log(`new user just joined!`);
+
+      // const { user, error } = addUser({
+      //   id: socket.id,
+      //   username: db_user.username,
+      //   room: room,
+      // });
 
       const { user, error } = addUser({
         id: socket.id,
-        username: db_user.username,
+        username: username,
         room: room,
       });
+
+      if (user) {
+        io.emit("unjoin", { status: 401 });
+        return;
+      }
 
       socket.emit("chat:message", {
         username: "admin",
@@ -101,41 +127,40 @@ const main = async () => {
       socket.join(user.room);
     });
 
-    socket.on("chat:send",
-      async ({ userId, username, type, text, url, lat, long }) => {
-        console.log({ userId, username, type, text, url, lat, long });
+    socket.on("chat:send", async ({ userId, username, type, text, url, lat, long }) => {
+      console.log({ userId, username, type, text, url, lat, long });
 
-        console.log("sending new message...");
-        console.log(socket);
+      console.log("sending new message...");
+      console.log(socket);
 
-        const user = getUser(socket.id);
-        console.log(user);
+      const user = getUser(socket.id);
+      console.log(user);
 
-        if (!user) return { message: "not authroized to enter this room" };
-        console.log(user);
-        console.log({ userId, username, type, text, url, lat, long });
+      if (!user) return { message: "not authroized to enter this room" };
+      console.log(user);
+      console.log({ userId, username, type, text, url, lat, long });
 
-        axios
-          .post(`${endpoint}/api/chat/add-message`, {
-            user_id: userId,
-            username,
-            type,
-            text,
-            url,
-            lat,
-            long,
-            city_id: user?.room,
-          })
-          .then((res) => {
-            console.log("here");
-            console.log(res?.data);
+      axios
+        .post(`${endpoint}/api/chat/add-message`, {
+          user_id: userId,
+          username,
+          type,
+          text,
+          url,
+          lat,
+          long,
+          city_id: user?.room,
+        })
+        .then((res) => {
+          console.log("here");
+          console.log(res?.data);
 
-            const data = res?.data?.data || null;
-            console.log(data);
-            io.to(data.city_id).emit("chat:message", data);
-          })
-          .catch((err) => console.log(err));
-      }
+          const data = res?.data?.data || null;
+          console.log(data);
+          io.to(data.city_id).emit("chat:message", data);
+        })
+        .catch((err) => console.log(err));
+    }
     );
 
     socket.on("currentLocation", ({ user_id, lat, long }) => {
