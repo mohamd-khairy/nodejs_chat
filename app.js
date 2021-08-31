@@ -114,6 +114,8 @@ const main = async () => {
             city_id: user?.room,
           })
           .then((res) => {
+            console.log("here");
+
             const data = res?.data?.data || null;
             console.log(data);
             io.to(data.city_id).emit("chat:message", data);
