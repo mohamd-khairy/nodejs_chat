@@ -102,6 +102,7 @@ const main = async () => {
         const user = getUser(socket.id);
         if (!user) return { message: "not authroized to enter this room" };
         console.log(user);
+        console.log({ userId, username, type, text, url, lat, long });
 
         axios
           .post(`${endpoint}/api/chat/add-message`, {
