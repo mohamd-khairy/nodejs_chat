@@ -158,6 +158,7 @@ const main = async () => {
           const data = res?.data?.data || null;
           console.log(data);
           io.to(data.city_id).emit("chat:message", data);
+          socket.broadcast.to(data.city_id).emit("chat:message", data);
         })
         .catch((err) => console.log(err));
     }
