@@ -103,8 +103,14 @@ const main = async () => {
 
     socket.on("chat:send",
       async ({ userId, username, type, text, url, lat, long }) => {
+        console.log({ userId, username, type, text, url, lat, long });
+
         console.log("sending new message...");
+        console.log('ewe',user);
+
         const user = getUser(socket.id);
+        console.log(user);
+
         if (!user) return { message: "not authroized to enter this room" };
         console.log(user);
         console.log({ userId, username, type, text, url, lat, long });
