@@ -23,14 +23,14 @@ app.get("/home", (req, res) => {
 });
 
 const main = async () => {
-  const endpoint = "http://sahl-app.com";
-  // const endpoint = "https://rakhis.codlop.com"
+  // const endpoint = "http://sahl-app.com";
+  const endpoint = "https://rakhis.codlop.com"
   // const endpoint = "http://127.0.0.1:8000"
 
   const response = await axios(`${endpoint}/api/chat/users`)
   const users = await response.data.data
   const privateUsers = users
-  users.filter(user => user?.city_id)
+  // users.filter(user => user?.city_id)
 
   io.on("connection", (socket) => {
     console.log(`new user connected!`);
