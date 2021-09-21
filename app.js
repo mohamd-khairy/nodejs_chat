@@ -18,7 +18,7 @@ server.listen(process.env.PORT || 5000, () =>
   console.log(`Server is ready on port 5000`)
 );
 
-app.get("/home", (req, res) => {
+app.get("/", (req, res) => {
   res.send("hello world!");
 });
 
@@ -30,7 +30,7 @@ const main = async () => {
   const response = await axios(`${endpoint}/api/chat/users`)
   const users = await response.data.data
   const privateUsers = users
-  // users.filter(user => user?.city_id)
+  // users.filter(user => user.city_id)
 
   io.on("connection", (socket) => {
     console.log(`new user connected!`);
@@ -40,7 +40,7 @@ const main = async () => {
       console.log({ userId, room, username });
 
       // const db_user = users.find(
-      //   (user) => user?.id === userId && user?.city_id === parseInt(room)
+      //   (user) => user.id === userId && user.city_id === parseInt(room)
       // );
       // console.log(db_user);
 
@@ -53,8 +53,8 @@ const main = async () => {
 
       // const { user, error } = addUser({
       //   id: socket.id,
-      //   username: db_user?.username,
-      //   room: db_user?.city_id,
+      //   username: db_user.username,
+      //   room: db_user.city_id,
       // });
 
       const { user, error } = addUser({
@@ -72,15 +72,15 @@ const main = async () => {
 
       socket.emit("chat:message", {
         username: "admin",
-        text: `Hi ${user?.username}, Welcome to the chat!`,
+        text: `Hi ${user.username}, Welcome to the chat!`,
       });
 
-      socket.broadcast.to(user?.room).emit("message", {
+      socket.broadcast.to(user.room).emit("message", {
         username: "admin",
-        text: `${user?.username} has joined the chat!`,
+        text: `${user.username} has joined the chat!`,
       });
 
-      socket.join(user?.room);
+      socket.join(user.room);
     });
 
     socket.on("join:private", ({ userId, room, username }) => {
@@ -149,13 +149,13 @@ const main = async () => {
           url,
           lat,
           long,
-          city_id: user?.room,
+          city_id: user.room,
         })
         .then((res) => {
           console.log("here");
-          console.log(res?.data);
+          console.log(res.data);
 
-          const data = res?.data?.data || null;
+          const data = res.data.data || null;
           console.log(data);
           io.to(data.city_id).emit("chat:message", data);
           socket.broadcast.to(data.city_id).emit("chat:message", data);
@@ -171,8 +171,8 @@ const main = async () => {
         .post(`${endpoint}/api/current-location`, { user_id, lat, long })
         .then((res) => {
           console.log("new location has been set!");
-          console.log(res?.data || res);
-          io.emit("upadatedLocation", res?.data?.data);
+          console.log(res.data || res);
+          io.emit("upadatedLocation", res.data.data);
         });
     });
   });
