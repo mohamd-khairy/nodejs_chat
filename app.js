@@ -14,8 +14,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-server.listen(3000, () =>
-  console.log(`Server is ready on port 3000`)
+server.listen(process.env.PORT || 5000, () =>
+  console.log(`Server is ready on port 5000`)
 );
 
 app.get("/", (req, res) => {
@@ -23,8 +23,8 @@ app.get("/", (req, res) => {
 });
 
 const main = async () => {
-  // const endpoint = "http://sahl-app.com";
-  const endpoint = "https://rakhis.codlop.com"
+  const endpoint = "http://sahl-app.com";
+  // const endpoint = "https://rakhis.codlop.com"
   // const endpoint = "http://127.0.0.1:8000"
 
   const response = await axios(`${endpoint}/api/chat/users`)
