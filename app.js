@@ -3,16 +3,16 @@ const cors = require("cors");
 const express = require("express");
 const app = express();
 const server = require("http").Server(app);
-const axios = require("axios");
-const io = require("socket.io")(server, {
-  cors: "*",
-});
+// const axios = require("axios");
+// const io = require("socket.io")(server, {
+//   cors: "*",
+// });
 
-const { addUser, getUser } = require("./users");
+// const { addUser, getUser } = require("./users");
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// app.use(cors());
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
 
 server.listen(process.env.PORT || 5000, () =>
   console.log(`Server is ready on port 5000`)
