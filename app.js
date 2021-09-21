@@ -14,8 +14,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-server.listen(process.env.PORT || 5000, () =>
-  console.log(`Server is ready on port 5000`)
+server.listen(3000, () =>
+  console.log(`Server is ready on port 3000`)
 );
 
 app.get("/", (req, res) => {
